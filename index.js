@@ -6,7 +6,7 @@ dotenv.config();
 const app = express();
 const pool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV !== "production", // TODO: revisar esto, no seria seguro en produccion
+  ...(process.env.NODE_ENV === "production" ? {} : { ssl: true }), // TODO: revisar esto, no seria seguro en produccion
 })
 
 
