@@ -1,0 +1,259 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model address {
+  id                    Int     @id(map: "address_pk") @default(autoincrement())
+  street_line_1         String? @db.VarChar(255)
+  street_line_2         String? @db.VarChar(255)
+  city                  String? @db.VarChar(100)
+  state_province_region String? @db.VarChar(100)
+  postal_code           String? @db.VarChar(20)
+  country               String? @db.VarChar(100)
+  additional_info       String?
+  user_id               Int
+  user                  user    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "address_user_fk")
+}
+
+model allergy {
+  id              Int            @id(map: "allergy_pk") @default(autoincrement())
+  name            String         @unique @db.VarChar(255)
+  description     String?
+  allergy_type_id Int?
+  allergy_type    allergy_type?  @relation(fields: [allergy_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "allergy_allergy_type_fk")
+  user_allergy    user_allergy[]
+}
+
+model allergy_type {
+  id      Int       @id(map: "allergy_type_pk") @default(autoincrement())
+  type    String    @db.VarChar(100)
+  allergy allergy[]
+}
+
+model chronic_disease {
+  id                     Int                      @id(map: "chronic_disease_pk") @default(autoincrement())
+  name                   String                   @db.VarChar(100)
+  description            String?
+  family_medical_history family_medical_history[]
+  user_chronic_disease   user_chronic_disease[]
+}
+
+model consultation {
+  id                Int                 @id(map: "consultation_pk") @default(autoincrement())
+  name              String?             @db.VarChar(255)
+  description       String?
+  date              DateTime?           @db.Date
+  user_id           Int
+  doctor_id         Int?
+  hospital_id       Int?
+  doctor            doctor?             @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "consultation_doctor_fk")
+  hospital          hospital?           @relation(fields: [hospital_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "consultation_hospital_fk")
+  user              user                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "consultation_user_fk")
+  consultation_drug consultation_drug[]
+}
+
+model consultation_drug {
+  consulation_id Int
+  drug_id        Int
+  consultation   consultation @relation(fields: [consulation_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "consultation_drug_fk_consulation")
+  drug           drug         @relation(fields: [drug_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "consultation_drug_fk_drug")
+
+  @@id([consulation_id, drug_id], map: "consultation_drug_pk")
+}
+
+model contacts {
+  id              Int           @id(map: "contacts_pk") @default(autoincrement())
+  contact_name    String?       @db.VarChar(255)
+  phone_number    String?       @db.VarChar(20)
+  email           String?       @db.VarChar(255)
+  relationship_id Int?
+  user_id         Int
+  relationship    relationship? @relation(fields: [relationship_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contacts_relationship_fk")
+  user            user          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "contacts_user_fk")
+}
+
+model doctor {
+  id                Int                 @id(map: "doctor_pk") @default(autoincrement())
+  name              String              @db.VarChar(255)
+  consultation      consultation[]
+  doctor_hospital   doctor_hospital[]
+  doctor_speciality doctor_speciality[]
+}
+
+model doctor_hospital {
+  doctor_id   Int
+  hospital_id Int
+  doctor      doctor   @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "doctor_hospital_fk_doctor")
+  hospital    hospital @relation(fields: [hospital_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "doctor_hospital_fk_hospital")
+
+  @@id([doctor_id, hospital_id], map: "doctor_hospital_pk")
+}
+
+model doctor_speciality {
+  doctor_id     Int
+  speciality_id Int
+  doctor        doctor     @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "doctor_speciality_fk_doctor")
+  speciality    speciality @relation(fields: [speciality_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "doctor_speciality_fk_speciality")
+
+  @@id([speciality_id, doctor_id], map: "doctor_speciality_pk")
+}
+
+model drug {
+  id                Int                 @id(map: "drug_pk") @default(autoincrement())
+  name              String              @db.VarChar(255)
+  description       String?
+  consultation_drug consultation_drug[]
+  user_drug         user_drug[]
+}
+
+model family_medical_history {
+  id                 Int             @id(map: "family_medical_history_pk") @default(autoincrement())
+  chronic_disaese_id Int
+  diagnosis_date     DateTime?       @db.Date
+  relationship_id    Int
+  description        String?
+  user_id            Int
+  chronic_disease    chronic_disease @relation(fields: [chronic_disaese_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "family_medical_history_chronic_disaese_fk")
+  relationship       relationship    @relation(fields: [relationship_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "family_medical_history_relationship_fk")
+  user               user            @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "family_medical_history_user_fk")
+}
+
+model habits {
+  user_id           Int      @id(map: "habits_pk")
+  smoke             Boolean?
+  drink_alcohol     Boolean?
+  other_drugs       Boolean?
+  physical_activity Boolean?
+  sleep_habits      Boolean?
+  user              user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "habits_user_fk")
+}
+
+model hospital {
+  id                  Int                   @id(map: "hospital_pk") @default(autoincrement())
+  name                String                @db.VarChar(255)
+  latitude            Float?
+  longitude           Float?
+  consultation        consultation[]
+  doctor_hospital     doctor_hospital[]
+  hospital_speciality hospital_speciality[]
+}
+
+model hospital_speciality {
+  hospital_id   Int
+  speciality_id Int
+  hospital      hospital   @relation(fields: [hospital_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "hospital_especiality_fk_hospital")
+  speciality    speciality @relation(fields: [speciality_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "hospital_speciality_fk_speciality")
+
+  @@id([hospital_id, speciality_id], map: "hospital_speciality_pk")
+}
+
+model relationship {
+  id                     Int                      @id(map: "relationship_pk") @default(autoincrement())
+  type                   String                   @unique @db.VarChar(50)
+  description            String?
+  is_relative            Boolean
+  contacts               contacts[]
+  family_medical_history family_medical_history[]
+}
+
+model sex {
+  id   Int    @id(map: "sex_pk") @default(autoincrement())
+  type String @db.VarChar(50)
+  user user[]
+}
+
+model speciality {
+  id                  Int                   @id(map: "speciality_pk") @default(autoincrement())
+  type                String                @db.VarChar(255)
+  description         String?
+  doctor_speciality   doctor_speciality[]
+  hospital_speciality hospital_speciality[]
+}
+
+model surgery {
+  id           Int            @id(map: "surgery_pk") @default(autoincrement())
+  name         String         @db.VarChar(255)
+  description  String?
+  user_surgery user_surgery[]
+}
+
+model user {
+  password               String                   @db.VarChar(255)
+  email                  String                   @unique @db.VarChar(255)
+  id                     Int                      @id(map: "user_pk") @default(autoincrement())
+  name                   String?                  @db.VarChar(255)
+  birth_date             DateTime?                @db.Date
+  phone_number           String?                  @db.VarChar(20)
+  sex_id                 Int?
+  address                address[]
+  consultation           consultation[]
+  contacts               contacts[]
+  family_medical_history family_medical_history[]
+  habits                 habits?
+  sex                    sex?                     @relation(fields: [sex_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_sex_fk")
+  user_allergy           user_allergy[]
+  user_chronic_disease   user_chronic_disease[]
+  user_drug              user_drug[]
+  user_surgery           user_surgery[]
+  user_vaccine           user_vaccine[]
+}
+
+model user_allergy {
+  allergy_id Int
+  user_id    Int
+  allergy    allergy @relation(fields: [allergy_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_allergy_fk_allergy")
+  user       user    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_allergy_fk_user")
+
+  @@id([allergy_id, user_id], map: "user_allergy_pk")
+}
+
+model user_chronic_disease {
+  user_id            Int
+  chronic_disease_id Int
+  diagnosis_date     DateTime?       @db.Date
+  chronic_disease    chronic_disease @relation(fields: [chronic_disease_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_chronic_disease_fk_chronic_disease")
+  user               user            @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_chronic_disease_fk_user")
+
+  @@id([user_id, chronic_disease_id], map: "user_chronic_disease_pk")
+}
+
+model user_drug {
+  user_id Int
+  drug_id Int
+  drug    drug @relation(fields: [drug_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_drug_fk_drug")
+  user    user @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_drug_fk_user")
+
+  @@id([user_id, drug_id], map: "user_drug_pk")
+}
+
+model user_surgery {
+  user_id     Int
+  surgery_id  Int
+  date        DateTime? @db.Date
+  description String?
+  surgery     surgery   @relation(fields: [surgery_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_surgery_fk_surgery")
+  user        user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_surgery_fk_user")
+
+  @@id([user_id, surgery_id], map: "user_surgery_pk")
+}
+
+model user_vaccine {
+  user_id          Int
+  vaccine_id       Int       @default(autoincrement())
+  vaccination_date DateTime? @db.Date
+  user             user      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_vaccine_fk_user")
+  vaccine          vaccine   @relation(fields: [vaccine_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_vaccine_fk_vaccine")
+
+  @@id([user_id, vaccine_id], map: "user_vaccine_pk")
+}
+
+model vaccine {
+  id           Int            @id(map: "vaccine_pk") @default(autoincrement())
+  name         String         @db.VarChar(255)
+  user_vaccine user_vaccine[]
+}
