@@ -8,6 +8,11 @@ dotenv.config();
 
 const port = process.env.PORT;
 
+app.use(express.static("public")); // for serving static files
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html");
+});
+
 // Routes
 app.use(require("./routes/routes"));
 
@@ -16,5 +21,5 @@ app.use(require("./routes/routes"));
 
 
 app.listen(port, () => {
-  console.log("Server is running on port 3000");
+  console.log("Server is running on port " + port + "...");
 })
