@@ -21,6 +21,7 @@ module.exports = {
   createUserVaccine: async (req, res) => {
     const { id } = req.params;
     const { vaccine_id, vaccination_date } = req.body;
+
     try {
       const userVaccine = await prisma.user_vaccine.create({
         data: {
@@ -29,9 +30,10 @@ module.exports = {
           vaccination_date : new Date(vaccination_date)
         }
       });
-      res.status(200).json({userVaccine});
+      res.status(200).json(userVaccine);
     } catch(err) {
       res.status(500).json({message: "Error al crear la vacuna del usuario", error: err});
     }
-  }
+  },
+
 }
