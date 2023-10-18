@@ -255,5 +255,7 @@ model user_vaccine {
 model vaccine {
   id           Int            @id(map: "vaccine_pk") @default(autoincrement())
   name         String         @db.VarChar(255)
+  description String?
+  image       String           @db.VarChar(255)
   user_vaccine user_vaccine[]
 }
