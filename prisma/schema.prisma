@@ -48,6 +48,7 @@ model consultation {
   name              String?             @db.VarChar(255)
   description       String?
   date              DateTime?           @db.Date
+  created_at             DateTime                 @default(now())
   user_id           Int
   doctor_id         Int?
   hospital_id       Int?
@@ -190,6 +191,7 @@ model user {
   birth_date             DateTime?                @db.Date
   phone_number           String?                  @db.VarChar(20)
   sex_id                 Int?
+  created_at             DateTime                 @default(now())
   address                address[]
   consultation           consultation[]
   contacts               contacts[]
@@ -255,7 +257,7 @@ model user_vaccine {
 model vaccine {
   id           Int            @id(map: "vaccine_pk") @default(autoincrement())
   name         String         @db.VarChar(255)
-  description String?
-  image       String           @db.VarChar(255)
+  image        String         @db.VarChar(255)
+  description  String?
   user_vaccine user_vaccine[]
 }

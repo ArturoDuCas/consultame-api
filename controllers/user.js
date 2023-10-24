@@ -78,5 +78,6 @@ module.exports = {
     } catch(err) {
       res.status(500).json({message: "Error al eliminar el usuario", error: err});
     }
-  }
+  },
+
 } //
