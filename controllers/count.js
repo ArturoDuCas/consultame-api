@@ -114,7 +114,7 @@ module.exports = {
       let diseases = await prisma.$queryRaw`
           SELECT
               cd.name,
-              COUNT(ucd.chronic_disease_id) AS occurences
+              COUNT(ucd.chronic_disease_id) AS occurrences
           FROM
               user_chronic_disease ucd
                   JOIN
@@ -122,14 +122,14 @@ module.exports = {
           GROUP BY
               cd.name
           ORDER BY
-              occurences DESC
+              occurrences DESC
               LIMIT 10;
       `;
 
-      // Convert the occurences from BigInt to Number
+      // Convert the occurrences from BigInt to Number
       diseases = diseases.map(disease => ({
         ...disease,
-        occurences: Number(disease.occurences),
+        occurrences: Number(disease.occurrences),
       }));
 
       res.status(200).json(diseases);
@@ -144,7 +144,7 @@ module.exports = {
       let contacts = await prisma.$queryRaw`
         SELECT
               r.type,
-              COUNT(c.relationship_id) AS occurences
+              COUNT(c.relationship_id) AS occurrences
           FROM
               contacts c
                   JOIN
@@ -152,14 +152,14 @@ module.exports = {
           GROUP BY
               r.type
           ORDER BY
-              occurences DESC
+              occurrences DESC
               LIMIT 10;
       `;
 
-      // Convert the occurences from BigInt to Number
+      // Convert the occurrences from BigInt to Number
       contacts = contacts.map(contact => ({
         ...contact,
-        occurences: Number(contact.occurences),
+        occurrences: Number(contact.occurrences),
       }));
 
       res.status(200).json(contacts);
@@ -175,7 +175,7 @@ console.log(err);
       let habits = await prisma.$queryRaw`
         SELECT
               h.name,
-              COUNT(uh.habit_id) AS occurences
+              COUNT(uh.habit_id) AS occurrences
           FROM
               user_habit uh
           JOIN
@@ -183,14 +183,14 @@ console.log(err);
           GROUP BY
               h.name
           ORDER BY
-              occurences DESC
+              occurrences DESC
               LIMIT 10;
       `;
 
-      // Convert the occurences from BigInt to Number
+      // Convert the occurrences from BigInt to Number
       habits = habits.map(habit => ({
         ...habit,
-        occurences: Number(habit.occurences),
+        occurrences: Number(habit.occurrences),
       }));
 
       res.status(200).json(habits);
