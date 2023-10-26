@@ -48,10 +48,10 @@ model consultation {
   name              String?             @db.VarChar(255)
   description       String?
   date              DateTime?           @db.Date
-  created_at             DateTime                 @default(now())
   user_id           Int
   doctor_id         Int?
   hospital_id       Int?
+  created_at        DateTime            @default(now())
   doctor            doctor?             @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "consultation_doctor_fk")
   hospital          hospital?           @relation(fields: [hospital_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "consultation_hospital_fk")
   user              user                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "consultation_user_fk")
@@ -124,16 +124,6 @@ model family_medical_history {
   user               user            @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "family_medical_history_user_fk")
 }
 
-model habits {
-  user_id           Int      @id(map: "habits_pk")
-  smoke             Boolean?
-  drink_alcohol     Boolean?
-  other_drugs       Boolean?
-  physical_activity Boolean?
-  sleep_habits      Boolean?
-  user              user     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "habits_user_fk")
-}
-
 model hospital {
   id                  Int                   @id(map: "hospital_pk") @default(autoincrement())
   name                String                @db.VarChar(255)
@@ -196,11 +186,11 @@ model user {
   consultation           consultation[]
   contacts               contacts[]
   family_medical_history family_medical_history[]
-  habits                 habits?
   sex                    sex?                     @relation(fields: [sex_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_sex_fk")
   user_allergy           user_allergy[]
   user_chronic_disease   user_chronic_disease[]
   user_drug              user_drug[]
+  user_habit             user_habit[]
   user_surgery           user_surgery[]
   user_vaccine           user_vaccine[]
 }
@@ -260,4 +250,29 @@ model vaccine {
   image        String         @db.VarChar(255)
   description  String?
   user_vaccine user_vaccine[]
+}
+
+model habit {
+  id          Int          @id(map: "habit_pk") @default(autoincrement())
+  name        String       @db.VarChar(255)
+  description String?
+  type_id     Int?
+  habit_type  habit_type?  @relation(fields: [type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "habit_fk_habit_type")
+  user_habit  user_habit[]
+}
+
+model user_habit {
+  user_id  Int
+  habit_id Int
+  value    Int?
+  habit    habit @relation(fields: [habit_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_habit_fk_habit")
+  user     user  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_habit_fk_user")
+
+  @@id([user_id, habit_id], map: "user_habit_pk")
+}
+
+model habit_type {
+  id          Int     @id(map: "habit_type_pk") @default(autoincrement())
+  description String  @db.VarChar(255)
+  habit       habit[]
 }
