@@ -71,6 +71,7 @@ module.exports = {
     }
   },
 
+
   countSex: async (req, res) => {
     try {
       const sexes = await prisma.sex.findMany({
@@ -109,35 +110,6 @@ module.exports = {
     }
   },
 
-  countChronic: async (req, res) => {
-    try {
-      let diseases = await prisma.$queryRaw`
-          SELECT
-              cd.name,
-              COUNT(ucd.chronic_disease_id) AS occurrences
-          FROM
-              user_chronic_disease ucd
-                  JOIN
-              chronic_disease cd ON ucd.chronic_disease_id = cd.id
-          GROUP BY
-              cd.name
-          ORDER BY
-              occurrences DESC
-              LIMIT 10;
-      `;
-
-      // Convert the occurrences from BigInt to Number
-      diseases = diseases.map(disease => ({
-        ...disease,
-        occurrences: Number(disease.occurrences),
-      }));
-
-      res.status(200).json(diseases);
-      } catch(err) {
-      console.log(err);
-      res.status(500).json({message: "Error al obtener los datos de enfermedades cronicas", error: err});
-    }
-  },
 
   countContacts: async (req, res) => {
     try {
@@ -168,6 +140,64 @@ module.exports = {
 console.log(err);
       res.status(500).json({message: "Error al obtener los datos de contactos", error: err});
     }
+  },
+
+  countDiseases: async (req, res) => {
+try {
+
+
+      let chronics = await prisma.$queryRaw`
+        SELECT
+              d.name,
+              COUNT(ud.disease_id) AS occurrences
+          FROM
+              user_disease ud
+          JOIN
+              disease d ON ud.disease_id = d.id
+          WHERE
+              d.type_id = 1 -- Para obtener solo las enfermedades crónicas
+          GROUP BY
+              d.name
+          ORDER BY
+              occurrences DESC
+              LIMIT 10;
+      `;
+
+  let acutes = await prisma.$queryRaw`
+      SELECT
+          d.name,
+          COUNT(ud.disease_id) AS occurrences
+      FROM
+          user_disease ud
+              JOIN
+          disease d ON ud.disease_id = d.id
+      WHERE
+          d.type_id = 2 -- Para obtener solo las enfermedades crónicas
+      GROUP BY
+          d.name
+      ORDER BY
+          occurrences DESC
+          LIMIT 10;
+  `;
+
+
+      // Convert the occurrences from BigInt to Number
+      chronics = chronics.map(disease => ({
+        ...disease,
+        occurrences: Number(disease.occurrences),
+      }));
+
+      acutes = acutes.map(disease => ({
+        ...disease,
+        occurrences: Number(disease.occurrences),
+      }));
+
+      res.status(200).json({chronics, acutes});
+    } catch(err) {
+      console.log(err);
+      res.status(500).json({message: "Error al obtener los datos de enfermedades", error: err});
+    }
+
   },
 
   countBadHabits: async (req, res) => {
