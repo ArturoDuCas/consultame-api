@@ -228,6 +228,37 @@ try {
       console.log(err);
       res.status(500).json({message: "Error al obtener los datos de malos habitos", error: err});
     }
+  },
+
+  countHospitals: async (req, res) => {
+    try {
+      let hospitals = await prisma.$queryRaw`
+        SELECT
+              h.name,
+              COUNT(c.hospital_id) AS occurrences
+          FROM
+              consultation c
+          JOIN
+              hospital h ON c.hospital_id = h.id
+          GROUP BY
+              h.name
+          ORDER BY
+              occurrences DESC
+              LIMIT 10;
+      `;
+
+      // Convert the occurrences from BigInt to Number
+      hospitals = hospitals.map(hospital => ({
+        ...hospital,
+        occurrences: Number(hospital.occurrences),
+      }));
+
+      res.status(200).json(hospitals);
+    } catch(err) {
+      console.log(err);
+      res.status(500).json({message: "Error al obtener los datos de hospitales", error: err});
+    }
+
   }
 
 } //

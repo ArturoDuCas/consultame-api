@@ -9,5 +9,6 @@ router.get("/sex", CountControllers.countSex);
 router.get("/contacts", CountControllers.countContacts);
 router.get("/bad_habits", CountControllers.countBadHabits);
 router.get("/disease", CountControllers.countDiseases);
+router.get("/hospital", CountControllers.countHospitals);
 
 module.exports = router;
