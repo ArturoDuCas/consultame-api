@@ -94,9 +94,12 @@ module.exports = {
       const counts = await Promise.all(countPromises);
 
 
-      const sexCounts = {};
+      const sexCounts = [];
       for (let i = 0; i < sexes.length; i++) {
-        sexCounts[sexes[i].type] = counts[i];
+        sexCounts.push({
+          type: sexes[i].type,
+          count: counts[i],
+        });
       }
 
       // Send the counts object as the response
