@@ -36,4 +36,23 @@ module.exports = {
     }
   },
 
+  deleteUserVaccine: async (req, res) => {
+    const { id } = req.params;
+    const { vaccine_id } = req.body;
+    try {
+      const userVaccine = await prisma.user_vaccine.delete({
+        where: {
+          user_id_vaccine_id: {
+            user_id: parseInt(id),
+            vaccine_id: parseInt(vaccine_id)
+          }
+        }
+      });
+
+      res.status(200).json(userVaccine);
+    } catch(err) {
+      res.status(500).json({message: "Error al eliminar la vacuna del usuario", error: err});
+    }
+}
+
 }
