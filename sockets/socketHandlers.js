@@ -1,5 +1,3 @@
-const { v4: uuidv4 } = require('uuid');
-
 const {
   IOS_CONNECTION,
   ROOM_CREATION,
@@ -11,11 +9,14 @@ const {
 
 
 
+const generateRoomKey = () => {
+  return Math.floor(Math.random() * 1000000).toString();
+}
 const registerSocketHandlers = (io, socket) => {
   socket.on(IOS_CONNECTION, () => {
     console.log(`iOS Client connected: ${socket.id}`);
     // generar una clave unica para el room
-    const uniqueRoomKey = uuidv4();
+    const uniqueRoomKey = generateRoomKey();
     // unir al socket al room
     socket.join(uniqueRoomKey);
     // enviar un mensaje al cliente iOS con la clave del room
