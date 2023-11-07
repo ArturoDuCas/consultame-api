@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+dotenv.config();
 const http = require("http");
 const { Server } = require("socket.io");
 
@@ -11,10 +12,8 @@ const io = new Server(server);
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
-dotenv.config();
 app.use(cors({ origin: 'http://localhost:5173' }));
 
-const port = process.env.PORT;
 
 app.use(express.static("public")); // for serving static files
 app.get("/", (req, res) => {
@@ -26,7 +25,7 @@ app.use(require("./routes/routes"));
 
 
 // Socket.io
-connections = [];
+let connections = [];
 io.on('connection', (socket) => {
   connections.push(socket);
   console.log(`Connected: ${connections.length} sockets connected`)
@@ -48,6 +47,10 @@ io.on('connection', (socket) => {
 });
 
 
-app.listen(port, () => {
+
+
+const port = process.env.PORT;
+
+server.listen(port, () => {
   console.log("Server is running on port " + port + "...");
 })
