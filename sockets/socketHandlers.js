@@ -17,6 +17,8 @@ const {
   ROOM_CONNECTION_VERIFICATION,
   ROOM_CONNECTION,
   ROOM_CLOSED,
+  MESSAGE_TO_WEB,
+  SAVE_MESSAGES_CONFIRMATION,
 } = require('./socketEvents');
 
 const activeRooms = new Set();
@@ -68,6 +70,19 @@ const registerSocketHandlers = (io, socket) => {
     callback({ success: true, message: 'Conexión al room exitosa' });
     console.log(`Web Client ${socket.id} joined room ${decoded.roomCode}`);
   });
+
+  socket.on(MESSAGE_TO_WEB, (message) => {
+    const roomKey = socketRoomMap.get(socket.id);
+    if(roomKey) {
+      io.to(roomKey).emit(MESSAGE_TO_WEB, message);
+      console.log(`IOS Client ${socket.id} sent message to room ${roomKey}`);
+    }
+  });
+
+  socket.on(SAVE_MESSAGES_CONFIRMATION, (confirmation) => {
+    const roomKey = socketRoomMap.get(socket.id);
+    console.log({roomKey, confirmation});
+  }); 
 
 
   socket.on('disconnect', () => {
