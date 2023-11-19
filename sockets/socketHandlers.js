@@ -42,7 +42,6 @@ const registerSocketHandlers = (io, socket) => {
   });
 
   socket.on(ROOM_CONNECTION_VERIFICATION, (roomCode, callback) => {
-    console.log({activeRooms, roomCode}); 
     if (activeRooms.has(roomCode)) {
       const token = generateToken(roomCode, socket.id);
       callback({ success: true, message: 'ID de sesión correcto', token });
@@ -79,9 +78,11 @@ const registerSocketHandlers = (io, socket) => {
     }
   });
 
-  socket.on(SAVE_MESSAGES_CONFIRMATION, (confirmation) => {
-    const roomKey = socketRoomMap.get(socket.id);
+  socket.on(SAVE_MESSAGES_CONFIRMATION, (data) => {
+    const { roomKey, confirmation } = data;
     console.log({roomKey, confirmation});
+
+    io.to(roomKey).emit(SAVE_MESSAGES_CONFIRMATION, confirmation);
   });
 
 
