@@ -19,6 +19,7 @@ const {
   ROOM_CLOSED,
   MESSAGE_TO_WEB,
   SEND_WORD_TO_WEB,
+  FINISH_DOCTOR_MESSAGE,
   SAVE_MESSAGES_CONFIRMATION,
 } = require('./socketEvents');
 
@@ -93,6 +94,14 @@ const registerSocketHandlers = (io, socket) => {
       console.log(`IOS Client ${socket.id} sent word to room ${roomKey}`);
     }
   });
+
+  socket.on(FINISH_DOCTOR_MESSAGE, (message) => {
+    const roomKey = socketRoomMap.get(socket.id);
+    if(roomKey) {
+      io.to(roomKey).emit(FINISH_DOCTOR_MESSAGE, message);
+      console.log(`IOS Client ${socket.id} sent finish message to room ${roomKey}`);
+    }
+  }); 
 
 
   socket.on('disconnect', () => {
