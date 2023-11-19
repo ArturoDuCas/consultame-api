@@ -18,6 +18,7 @@ const {
   ROOM_CONNECTION,
   ROOM_CLOSED,
   MESSAGE_TO_WEB,
+  SEND_WORD_TO_WEB,
   SAVE_MESSAGES_CONFIRMATION,
 } = require('./socketEvents');
 
@@ -83,6 +84,14 @@ const registerSocketHandlers = (io, socket) => {
     console.log({roomKey, confirmation});
 
     io.to(roomKey).emit(SAVE_MESSAGES_CONFIRMATION, confirmation);
+  });
+
+  socket.on(SEND_WORD_TO_WEB, (word) => {
+    const roomKey = socketRoomMap.get(socket.id);
+    if(roomKey) {
+      io.to(roomKey).emit(SEND_WORD_TO_WEB, word);
+      console.log(`IOS Client ${socket.id} sent word to room ${roomKey}`);
+    }
   });
 
 

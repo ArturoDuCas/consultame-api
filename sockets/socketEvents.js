@@ -6,6 +6,10 @@ module.exports = {
   MESSAGE_TO_WEB: "Message to Web", // IOS -> NodeJS -> Web: El cliente iOS envía un mensaje al cliente web
   SAVE_MESSAGES_CONFIRMATION: "Save Messages Confirmation", // Web -> NodeJS -> IOS: El cliente web confirma si se puede guardar o no la conversacion en la base de datos
 
+  SEND_WORD_TO_WEB: "Send Word to Web", // IOS -> NodeJS -> Web: El cliente iOS envía una palabra al cliente web
+
+
+
 
   ROOM_CLOSED: 'Room Closed', // NodeJS -> Web: El servidor envía la señal al cliente web de que el room se cerró
 };
