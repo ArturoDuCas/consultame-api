@@ -8,6 +8,8 @@ module.exports = {
 
   SEND_WORD_TO_WEB: "Send Word to Web", // IOS -> NodeJS -> Web: El cliente iOS envía una palabra al cliente web
   FINISH_DOCTOR_MESSAGE: "Finish Doctor Message", // IOS -> NodeJS -> Web: El cliente iOS envía una señal al cliente web de que el doctor terminó de hablar
+  SEND_MESSAGE_BEING_WRITTEN_BY_USER: "Send Message Being Written by User", // IOS -> NodeJS -> Web: El cliente iOS envia el mensaje actual que está escribiendo el usuario
+  SEND_MESSAGE_WROTE_BY_USER: "Send Message Wrote by User", // IOS -> NodeJS -> Web: El cliente iOS envia el mensaje completo que escribio el usuario
 
 
 
