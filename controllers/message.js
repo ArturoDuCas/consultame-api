@@ -3,7 +3,6 @@ const { prisma } = require("../config/db");
 module.exports = {
   createMessage: async (req, res) => {
     const { message, is_from_user, created_at, consultation_id } = req.body;
-    console.log({ message, is_from_user, created_at, consultation_id });
     try {
       const new_message = await prisma.messages.create({
         data: {

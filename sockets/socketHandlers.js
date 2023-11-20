@@ -17,12 +17,10 @@ const {
   ROOM_CONNECTION_VERIFICATION,
   ROOM_CONNECTION,
   ROOM_CLOSED,
-  MESSAGE_TO_WEB,
   SEND_WORD_TO_WEB,
-  FINISH_DOCTOR_MESSAGE,
   SAVE_MESSAGES_CONFIRMATION,
   SEND_MESSAGE_BEING_WRITTEN_BY_USER,
-  SEND_MESSAGE_WROTE_BY_USER,
+  SEND_COMPLETE_MESSAGE,
 
 } = require('./socketEvents');
 
@@ -75,14 +73,6 @@ const registerSocketHandlers = (io, socket) => {
     console.log(`Web Client ${socket.id} joined room ${decoded.roomCode}`);
   });
 
-  socket.on(MESSAGE_TO_WEB, (message) => {
-    const roomKey = socketRoomMap.get(socket.id);
-    if(roomKey) {
-      io.to(roomKey).emit(MESSAGE_TO_WEB, message);
-      console.log(`IOS Client ${socket.id} sent message to room ${roomKey}`);
-    }
-  });
-
   socket.on(SAVE_MESSAGES_CONFIRMATION, (data) => {
     const { roomKey, confirmation } = data;
     console.log({roomKey, confirmation});
@@ -98,11 +88,11 @@ const registerSocketHandlers = (io, socket) => {
     }
   });
 
-  socket.on(FINISH_DOCTOR_MESSAGE, (message) => {
+  socket.on(SEND_COMPLETE_MESSAGE, (message) => {
     const roomKey = socketRoomMap.get(socket.id);
     if(roomKey) {
-      io.to(roomKey).emit(FINISH_DOCTOR_MESSAGE, message);
-      console.log(`IOS Client ${socket.id} sent finish message to room ${roomKey}`);
+      io.to(roomKey).emit(SEND_COMPLETE_MESSAGE, message);
+      console.log(`IOS Client ${socket.id} sent complete message to room ${roomKey}`);
     }
   });
 
@@ -114,13 +104,6 @@ const registerSocketHandlers = (io, socket) => {
     }
   });
 
-  socket.on(SEND_MESSAGE_WROTE_BY_USER, (message) => {
-    const roomKey = socketRoomMap.get(socket.id);
-    if(roomKey) {
-      io.to(roomKey).emit(SEND_MESSAGE_WROTE_BY_USER, message);
-      console.log(`IOS Client ${socket.id} sent message wrote by user to room ${roomKey}`);
-    }
-  });
 
 
   socket.on('disconnect', () => {
