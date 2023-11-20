@@ -10,6 +10,7 @@ router.use("/disease", require("./disease"));
 router.use("/vaccine", require("./vaccine"));
 router.use("/user/vaccine", require("./user_vaccine"));
 router.use("/count", require("./count"));
-
+router.use("/doctors", require("./doctors"));
+router.use("/doctors/local", require("./doctors_local"));
 
 module.exports = router; 

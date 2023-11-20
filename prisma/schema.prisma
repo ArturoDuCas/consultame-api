@@ -182,6 +182,7 @@ model user {
   sex                    sex?                     @relation(fields: [sex_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_sex_fk")
   user_allergy           user_allergy[]
   user_disease           user_disease[]
+  user_doctor_local      user_doctor_local[]
   user_drug              user_drug[]
   user_habit             user_habit[]
   user_surgery           user_surgery[]
@@ -294,4 +295,19 @@ model messages {
   created_at      DateTime?    @default(now()) @db.Timestamp(6)
   consultation_id Int
   consultation    consultation @relation(fields: [consultation_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "messages_fk_consultation")
+}
+
+model doctor_local {
+  id                Int                 @id @default(autoincrement())
+  name              String              @db.VarChar(255)
+  user_doctor_local user_doctor_local[]
+}
+
+model user_doctor_local {
+  user_id      Int
+  doctor_id    Int
+  doctor_local doctor_local @relation(fields: [doctor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_doctor_local_fk_doctor_local")
+  user         user         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_doctor_local_user_fk")
+
+  @@id([user_id, doctor_id])
 }
