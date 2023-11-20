@@ -112,7 +112,7 @@ const registerSocketHandlers = (io, socket) => {
       io.to(roomKey).emit(SEND_MESSAGE_BEING_WRITTEN_BY_USER, message);
       console.log(`IOS Client ${socket.id} sent message being written by user to room ${roomKey}`);
     }
-  })
+  });
 
   socket.on(SEND_MESSAGE_WROTE_BY_USER, (message) => {
     const roomKey = socketRoomMap.get(socket.id);
