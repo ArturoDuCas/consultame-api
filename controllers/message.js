@@ -14,7 +14,7 @@ module.exports = {
           consultation_id: parseInt(consultation_id)
         }
       });
-      res.status(200).json({new_message});
+      res.status(200).json(new_message);
     } catch(err) {
       res.status(500).json({message: "Error al crear el mensaje", error: err});
     }
