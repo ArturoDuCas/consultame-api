@@ -17,10 +17,9 @@ const {
   ROOM_CONNECTION_VERIFICATION,
   ROOM_CONNECTION,
   ROOM_CLOSED,
-  SEND_WORD_TO_WEB,
   SAVE_MESSAGES_CONFIRMATION,
-  SEND_MESSAGE_BEING_WRITTEN_BY_USER,
   SEND_COMPLETE_MESSAGE,
+  SEND_MESSAGE_BEING_WRITTEN,
 
 } = require('./socketEvents');
 
@@ -80,11 +79,12 @@ const registerSocketHandlers = (io, socket) => {
     io.to(roomKey).emit(SAVE_MESSAGES_CONFIRMATION, confirmation);
   });
 
-  socket.on(SEND_WORD_TO_WEB, (word) => {
+
+  socket.on(SEND_MESSAGE_BEING_WRITTEN, (message) => {
     const roomKey = socketRoomMap.get(socket.id);
     if(roomKey) {
-      io.to(roomKey).emit(SEND_WORD_TO_WEB, word);
-      console.log(`IOS Client ${socket.id} sent word to room ${roomKey}`);
+      io.to(roomKey).emit(SEND_MESSAGE_BEING_WRITTEN, message);
+      console.log(`IOS Client ${socket.id} sent message being written to room ${roomKey}`);
     }
   });
 
@@ -95,16 +95,6 @@ const registerSocketHandlers = (io, socket) => {
       console.log(`IOS Client ${socket.id} sent complete message to room ${roomKey}`);
     }
   });
-
-  socket.on(SEND_MESSAGE_BEING_WRITTEN_BY_USER, (message) => {
-    const roomKey = socketRoomMap.get(socket.id);
-    if(roomKey) {
-      io.to(roomKey).emit(SEND_MESSAGE_BEING_WRITTEN_BY_USER, message);
-      console.log(`IOS Client ${socket.id} sent message being written by user to room ${roomKey}`);
-    }
-  });
-
-
 
   socket.on('disconnect', () => {
     const roomKey = socketRoomMap.get(socket.id);
