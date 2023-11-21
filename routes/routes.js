@@ -10,6 +10,8 @@ router.use("/disease", require("./disease"));
 router.use("/vaccine", require("./vaccine"));
 router.use("/user/vaccine", require("./user_vaccine"));
 router.use("/count", require("./count"));
+router.use("/consultation", require("./consultation"));
+
 
 
 module.exports = router; 
