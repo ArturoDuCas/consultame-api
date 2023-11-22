@@ -18,5 +18,6 @@ router.use("/user/habit", require("./user_habit"));
 router.use("/habit/type", require("./habit_type"));router.use("/doctors", require("./doctors"));
 router.use("/doctors/local", require("./doctors_local"));
 router.use("/message", require("./message"));
+router.use("/consultation", require("./consultation"));
 
 module.exports = router; 
