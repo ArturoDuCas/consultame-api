@@ -1,13 +1,30 @@
+const jwt = require('jsonwebtoken');
+const dotenv = require("dotenv");
+dotenv.config();
+const JWT_SECRET = process.env.JWT_SECRET;
+const generateToken = (roomCode, userId) => {
+  const payload = {
+    roomCode,
+    userId,
+  };
+
+  return jwt.sign(payload, JWT_SECRET, {});
+};
+
 const {
   IOS_CONNECTION,
   ROOM_CREATION,
+  ROOM_CONNECTION_VERIFICATION,
+  ROOM_CONNECTION,
+  ROOM_CLOSED,
+  SAVE_MESSAGES_CONFIRMATION,
+  SEND_COMPLETE_MESSAGE,
+  SEND_MESSAGE_BEING_WRITTEN,
 
-
-  NODEJS_SERVER_PORT,
-  IOS_CLIENT_PORT,
 } = require('./socketEvents');
 
-
+const activeRooms = new Set();
+const socketRoomMap = new Map();
 
 const generateRoomKey = () => {
   return Math.floor(Math.random() * 1000000).toString();
@@ -15,18 +32,81 @@ const generateRoomKey = () => {
 const registerSocketHandlers = (io, socket) => {
   socket.on(IOS_CONNECTION, () => {
     console.log(`iOS Client connected: ${socket.id}`);
-    // generar una clave unica para el room
+
     const uniqueRoomKey = generateRoomKey();
-    // unir al socket al room
     socket.join(uniqueRoomKey);
-    // enviar un mensaje al cliente iOS con la clave del room
+    activeRooms.add(uniqueRoomKey);
+    socketRoomMap.set(socket.id, uniqueRoomKey);
+
+
     io.to(socket.id).emit(ROOM_CREATION, { roomKey: uniqueRoomKey });
-
-
     console.log(`IOS Client ${socket.id} joined room ${uniqueRoomKey}`);
   });
 
-  // Aquí puedes agregar más manejadores de eventos según sea necesario
+  socket.on(ROOM_CONNECTION_VERIFICATION, (roomCode, callback) => {
+    if (activeRooms.has(roomCode)) {
+      const token = generateToken(roomCode, socket.id);
+      callback({ success: true, message: 'ID de sesión correcto', token });
+    } else {
+      console.log(`IOS Client ${socket.id} tried to join room ${roomCode} but it doesn't exist`);
+      callback({ success: false, message: 'La sala no existe' });
+    }
+  });
+
+  socket.on(ROOM_CONNECTION, (token, callback) => {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if(!decoded) {
+      callback({ success: false, message: 'No se pudo conectar al room' });
+      console.log(`Web Client ${socket.id} tried to join room ${decoded.roomCode} but the token is invalid`);
+      return;
+    }
+
+    if(!activeRooms.has(decoded.roomCode)) {
+      callback({ success: false, message: 'No se pudo conectar al room' });
+      console.log(`Web Client ${socket.id} tried to join room ${decoded.roomCode} but it doesn't exist`);
+      return;
+    }
+
+    socket.join(decoded.roomCode);
+    callback({ success: true, message: 'Conexión al room exitosa' });
+    console.log(`Web Client ${socket.id} joined room ${decoded.roomCode}`);
+  });
+
+  socket.on(SAVE_MESSAGES_CONFIRMATION, (data) => {
+    const { roomKey, confirmation } = data;
+    console.log({roomKey, confirmation});
+
+    io.to(roomKey).emit(SAVE_MESSAGES_CONFIRMATION, confirmation);
+  });
+
+
+  socket.on(SEND_MESSAGE_BEING_WRITTEN, (message) => {
+    const roomKey = socketRoomMap.get(socket.id);
+    if(roomKey) {
+      io.to(roomKey).emit(SEND_MESSAGE_BEING_WRITTEN, message);
+      console.log(`IOS Client ${socket.id} sent message being written to room ${roomKey}`);
+    }
+  });
+
+  socket.on(SEND_COMPLETE_MESSAGE, (message) => {
+    const roomKey = socketRoomMap.get(socket.id);
+    if(roomKey) {
+      io.to(roomKey).emit(SEND_COMPLETE_MESSAGE, message);
+      console.log(`IOS Client ${socket.id} sent complete message to room ${roomKey}`);
+    }
+  });
+
+  socket.on('disconnect', () => {
+    const roomKey = socketRoomMap.get(socket.id);
+    if(roomKey) {
+      io.to(roomKey).emit(ROOM_CLOSED, { message: 'El room se cerró' });
+      activeRooms.delete(roomKey);
+      socketRoomMap.delete(socket.id);
+      console.log(`IOS Client ${socket.id} left room ${roomKey}`);
+    }
+
+    console.log(`Disconnected: ${socket.id}`);
+  });
 };
 
 module.exports = registerSocketHandlers;
