@@ -7,7 +7,8 @@
     "generate": "npx prisma generate",
     "studio": "npx prisma studio",
     "start": "npm run generate && node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "pull": "prisma db pull"
   },
   "keywords": [],
   "author": "",

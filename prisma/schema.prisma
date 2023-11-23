@@ -175,10 +175,14 @@ model user {
   phone_number           String?                  @db.VarChar(20)
   sex_id                 Int?
   created_at             DateTime                 @default(now())
+  height                 Decimal?                 @db.Decimal
+  weight                 Decimal?                 @db.Decimal
+  blood_id               Int?
   address                address[]
   consultation           consultation[]
   contacts               contacts[]
   family_medical_history family_medical_history[]
+  blood_type             blood_type?              @relation(fields: [blood_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_fk_blood")
   sex                    sex?                     @relation(fields: [sex_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_sex_fk")
   user_allergy           user_allergy[]
   user_disease           user_disease[]
@@ -310,4 +314,10 @@ model user_doctor_local {
   user         user         @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_doctor_local_user_fk")
 
   @@id([user_id, doctor_id])
+}
+
+model blood_type {
+  id   Int    @id(map: "blood_type_pk") @default(autoincrement())
+  type String @unique(map: "blood_type_unique_type") @db.VarChar(50)
+  user user[]
 }
