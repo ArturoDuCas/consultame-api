@@ -6,7 +6,7 @@ const registerSocketHandlers = require('./socketHandlers');
 const initializeSocketServer = (server) => {
   const io = socketIO(server, {
     cors: {
-      origin: ["https://admin.socket.io", "http://localhost:5173"],
+      origin: ["https://admin.socket.io", "http://localhost:5173", "http://localhost:5174"],
       credentials: true
     }
   });
