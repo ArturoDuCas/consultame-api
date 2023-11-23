@@ -1,11 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const ConsultControllers = require("../controllers/consultation")
-
-router.get("/all", ConsultControllers.getAllConsultations);
-router.get("/:id", ConsultControllers.getConsultations);
-
-
+const ConsultationControllers = require("../controllers/consultation");
+router.get("/", ConsultationControllers.getAllConsultations);
+router.post("/", ConsultationControllers.createConsultation);
+router.get("/:id", ConsultationControllers.getSpecificConsultation);
 module.exports = router;
-
-

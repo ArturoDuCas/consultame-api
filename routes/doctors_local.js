@@ -2,6 +2,6 @@ const express = require("express");
 const router = express.Router();
 const doctorsControllers = require("../controllers/doctors")
 
-router.get("/", doctorsControllers.getLocalDoctors);
+router.get("/:id", doctorsControllers.getLocalDoctors);
 
 module.exports = router;

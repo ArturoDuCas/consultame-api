@@ -4,6 +4,7 @@ const UserControllers = require("../controllers/user")
 
 
 router.get("/", UserControllers.getAllUsers);
+router.get("/basics/:id", UserControllers.getUserBasics);
 
 router.get("/:id", UserControllers.getUserById);
 
