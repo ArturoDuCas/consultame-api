@@ -19,5 +19,6 @@ router.use("/habit/type", require("./habit_type"));router.use("/doctors", requir
 router.use("/doctors/local", require("./doctors_local"));
 router.use("/message", require("./message"));
 router.use("/consultation", require("./consultation"));
+router.use("/family", require("./family"));
 
 module.exports = router; 
