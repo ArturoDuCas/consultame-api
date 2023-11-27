@@ -71,6 +71,7 @@ module.exports = {
     }
   },
 
+
   countSex: async (req, res) => {
     try {
       const sexes = await prisma.sex.findMany({
@@ -93,9 +94,12 @@ module.exports = {
       const counts = await Promise.all(countPromises);
 
 
-      const sexCounts = {};
+      const sexCounts = [];
       for (let i = 0; i < sexes.length; i++) {
-        sexCounts[sexes[i].type] = counts[i];
+        sexCounts.push({
+          type: sexes[i].type,
+          count: counts[i],
+        });
       }
 
       // Send the counts object as the response
@@ -109,35 +113,6 @@ module.exports = {
     }
   },
 
-  countChronic: async (req, res) => {
-    try {
-      let diseases = await prisma.$queryRaw`
-          SELECT
-              cd.name,
-              COUNT(ucd.chronic_disease_id) AS occurrences
-          FROM
-              user_chronic_disease ucd
-                  JOIN
-              chronic_disease cd ON ucd.chronic_disease_id = cd.id
-          GROUP BY
-              cd.name
-          ORDER BY
-              occurrences DESC
-              LIMIT 10;
-      `;
-
-      // Convert the occurrences from BigInt to Number
-      diseases = diseases.map(disease => ({
-        ...disease,
-        occurrences: Number(disease.occurrences),
-      }));
-
-      res.status(200).json(diseases);
-      } catch(err) {
-      console.log(err);
-      res.status(500).json({message: "Error al obtener los datos de enfermedades cronicas", error: err});
-    }
-  },
 
   countContacts: async (req, res) => {
     try {
@@ -170,6 +145,64 @@ console.log(err);
     }
   },
 
+  countDiseases: async (req, res) => {
+try {
+
+
+      let chronics = await prisma.$queryRaw`
+        SELECT
+              d.name,
+              COUNT(ud.disease_id) AS occurrences
+          FROM
+              user_disease ud
+          JOIN
+              disease d ON ud.disease_id = d.id
+          WHERE
+              d.type_id = 1 -- Para obtener solo las enfermedades crónicas
+          GROUP BY
+              d.name
+          ORDER BY
+              occurrences DESC
+              LIMIT 10;
+      `;
+
+  let acutes = await prisma.$queryRaw`
+      SELECT
+          d.name,
+          COUNT(ud.disease_id) AS occurrences
+      FROM
+          user_disease ud
+              JOIN
+          disease d ON ud.disease_id = d.id
+      WHERE
+          d.type_id = 2 -- Para obtener solo las enfermedades crónicas
+      GROUP BY
+          d.name
+      ORDER BY
+          occurrences DESC
+          LIMIT 10;
+  `;
+
+
+      // Convert the occurrences from BigInt to Number
+      chronics = chronics.map(disease => ({
+        ...disease,
+        occurrences: Number(disease.occurrences),
+      }));
+
+      acutes = acutes.map(disease => ({
+        ...disease,
+        occurrences: Number(disease.occurrences),
+      }));
+
+      res.status(200).json({chronics, acutes});
+    } catch(err) {
+      console.log(err);
+      res.status(500).json({message: "Error al obtener los datos de enfermedades", error: err});
+    }
+
+  },
+
   countBadHabits: async (req, res) => {
     try {
       let habits = await prisma.$queryRaw`
@@ -198,6 +231,37 @@ console.log(err);
       console.log(err);
       res.status(500).json({message: "Error al obtener los datos de malos habitos", error: err});
     }
+  },
+
+  countHospitals: async (req, res) => {
+    try {
+      let hospitals = await prisma.$queryRaw`
+        SELECT
+              h.name,
+              COUNT(c.hospital_id) AS occurrences
+          FROM
+              consultation c
+          JOIN
+              hospital h ON c.hospital_id = h.id
+          GROUP BY
+              h.name
+          ORDER BY
+              occurrences DESC
+              LIMIT 10;
+      `;
+
+      // Convert the occurrences from BigInt to Number
+      hospitals = hospitals.map(hospital => ({
+        ...hospital,
+        occurrences: Number(hospital.occurrences),
+      }));
+
+      res.status(200).json(hospitals);
+    } catch(err) {
+      console.log(err);
+      res.status(500).json({message: "Error al obtener los datos de hospitales", error: err});
+    }
+
   }
 
 } //
