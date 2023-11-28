@@ -116,10 +116,10 @@ module.exports = {
            name: true,
            birth_date: true,
            phone_number: true,
-           sex_id: true,
+           sex: true,
            height: true,
            weight: true,
-           blood_id: true
+           blood_type: true
          }
       });
 
@@ -127,6 +127,7 @@ module.exports = {
       const addresses = await prisma.address.findMany({
         where: { user_id: userId },
         select: {
+          id: true,
           street_line_1: true,
           street_line_2: true,
           city: true,
@@ -140,7 +141,7 @@ module.exports = {
       const userDetails = { addresses, user };
       
   
-      res.status(200).json(userDetails);
+      res.status(200).json({ ...user, addresses});
     } catch (err) {
       console.error(err);
       res.status(500).json({ message: "Error al obtener los detalles del usuario", error: err.message });
