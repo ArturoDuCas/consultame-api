@@ -1,5 +1,4 @@
 const { prisma } = require("../config/db");
-const {tr} = require("date-fns/locale");
 
 module.exports = {
     getUserFamily: async (req, res) => {
