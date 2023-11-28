@@ -31,7 +31,7 @@ const allergy = await prisma.allergy.create({
     try {
       const allergies = await prisma.allergy.findMany({
         where: {
-          allergy: {
+          user_allergy: {
             none : {
               user_id : parseInt(id)
             }
