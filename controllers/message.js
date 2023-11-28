@@ -18,4 +18,19 @@ module.exports = {
       res.status(500).json({message: "Error al crear el mensaje", error: err});
     }
   },
+
+
+  getMessages: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const messages = await prisma.messages.findMany({
+        where: {
+          consultation_id: parseInt(id)
+        }
+      });
+      res.status(200).json(messages);
+    } catch(err) {
+      res.status(500).json({message: "Error al obtener los mensajes", error: err});
+    }
+  }
 }
