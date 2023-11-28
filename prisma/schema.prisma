@@ -174,7 +174,7 @@ model user {
   birth_date             DateTime?                @db.Date
   phone_number           String?                  @db.VarChar(20)
   sex_id                 Int?
-  created_at             DateTime                 @default(now())
+  created_at             DateTime ?                @default(now())
   height                 Decimal?                 @db.Decimal
   weight                 Decimal?                 @db.Decimal
   blood_id               Int?

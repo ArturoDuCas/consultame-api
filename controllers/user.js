@@ -108,27 +108,71 @@ module.exports = {
   getUserDetails: async (req, res) => {
     const { id } = req.params;
     try {
-      const userDetails = await prisma.user.findUnique({
-        where: {
-          id: parseInt(id)
-        },
-        include: {
-          address: {
-            take: 1 
-          },
-         
+      const userId = parseInt(id);
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+          select: {
+           email: true,
+           name: true,
+           birth_date: true,
+           phone_number: true,
+           sex_id: true,
+           height: true,
+           weight: true,
+           blood_id: true
+         }
+      });
+
+  
+      const addresses = await prisma.address.findMany({
+        where: { user_id: userId },
+        select: {
+          street_line_1: true,
+          street_line_2: true,
+          city: true,
+          state_province_region: true,
+          postal_code: true,
+          country: true,
+          additional_info: true
         }
       });
-      if (userDetails) {
-        res.status(200).json(userDetails);
-      } else {
-        res.status(404).json({ message: "Usuario no encontrado" });
-      }
+  
+      const userDetails = { addresses, user };
+      
+  
+      res.status(200).json(userDetails);
     } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Error al obtener los detalles del usuario", error: err.message });
+    }
+  },
+  
+
+
+  createUserWithDetails: async (req, res) => {
+    const { name, email, password, sex_id, address } = req.body; 
+  
+    try {
+      const newUser = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password,
+          sex_id: parseInt(sex_id),
+          address: {
+            create: address 
+          }
+        },
+        include: {
+          address: true
+        }
+      });
+      res.status(200).json(newUser);
+    } catch(err) {
       console.log(err); 
-      res.status(500).json({ message: "Error al obtener los detalles del usuario", error: err });
+      res.status(500).json({message: "Error al crear el usuario con detalles", error: err});
     }
   }
-  
+
   
 }
