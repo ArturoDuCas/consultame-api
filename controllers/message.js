@@ -43,6 +43,9 @@ module.exports = {
       const messages = await prisma.messages.findMany({
         where: {
           consultation_id: parseInt(id)
+        },
+        orderBy: {
+          created_at: 'asc'
         }
       });
       res.status(200).json(messages);
