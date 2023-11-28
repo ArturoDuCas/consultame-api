@@ -105,4 +105,30 @@ module.exports = {
     }
   },
 
-} //
+  getUserDetails: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const userDetails = await prisma.user.findUnique({
+        where: {
+          id: parseInt(id)
+        },
+        include: {
+          address: {
+            take: 1 
+          },
+         
+        }
+      });
+      if (userDetails) {
+        res.status(200).json(userDetails);
+      } else {
+        res.status(404).json({ message: "Usuario no encontrado" });
+      }
+    } catch (err) {
+      console.log(err); 
+      res.status(500).json({ message: "Error al obtener los detalles del usuario", error: err });
+    }
+  }
+  
+  
+}
