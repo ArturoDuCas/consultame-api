@@ -112,6 +112,7 @@ module.exports = {
       const user = await prisma.user.findUnique({
         where: { id: userId },
           select: {
+          id: true,
            email: true,
            name: true,
            birth_date: true,
