@@ -49,7 +49,6 @@ const registerSocketHandlers = (io, socket) => {
     if (activeRooms.has(roomCode)) {
       const token = generateToken(roomCode, socket.id);
 
-      io.to(roomCode).emit(REQUEST_CONSULTATION_DATA);
       callback({ success: true, message: 'ID de sesión correcto', token });
     } else {
       console.log(`IOS Client ${socket.id} tried to join room ${roomCode} but it doesn't exist`);
@@ -82,6 +81,7 @@ const registerSocketHandlers = (io, socket) => {
     }
 
     socket.join(decoded.roomCode);
+    io.to(decoded.roomCode).emit(REQUEST_CONSULTATION_DATA);
     callback({ success: true, message: 'Conexión al room exitosa' });
     console.log(`Web Client ${socket.id} joined room ${decoded.roomCode}`);
   });
