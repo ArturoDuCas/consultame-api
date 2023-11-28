@@ -37,24 +37,31 @@ module.exports = {
     }
   },
 
-  // createConsultation: async (req, res) => {
-  //   const { name, description, user_id, doctor_id } = req.body;
-  //   try {
-  //     const consultation = await prisma.contacts.create({
-  //       data: {
-  //         name,
-  //         description,
-  //         user_id: parseInt(user_id),
-  //         doctor_id: parseInt(doctor_id),
-  //         hospital_id: parseInt(hospital_id)
-  //       }
-  //     });
-  //     res.status(200).json(consultation);
-  //   }
-  //   catch(err) {
-  //     res.status(500).json({message: "Error al crear el una consulta", error: err});
-  //   }
-  // },
+  deleteConsultation: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const deletedMessages = await prisma.messages.deleteMany({
+        where: {
+          consultation_id: parseInt(id)
+        }
+      });
+
+      const deletedConsultation = await prisma.consultation.delete({
+        where: {
+          id: parseInt(id)
+        }
+      });
+
+      const { consultation_id, name, user_id } = deletedConsultation;
+      const { count } = deletedMessages;
+
+      res.status(200).json({consultation_id, name, user_id, deletedMessages: count });
+    } catch(err) {
+      res.status(500).json({message: "Error al eliminar la consulta", error: err});
+    }
+  },
+
+
   getAllConsultations: async (req, res) => {
     try {
       const consultations = await prisma.consultation.findMany();
