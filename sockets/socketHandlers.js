@@ -20,6 +20,8 @@ const {
   SAVE_MESSAGES_CONFIRMATION,
   SEND_COMPLETE_MESSAGE,
   SEND_MESSAGE_BEING_WRITTEN,
+  REQUEST_CONSULTATION_DATA,
+  SEND_CONSULTATION_DATA,
 
 } = require('./socketEvents');
 
@@ -46,10 +48,21 @@ const registerSocketHandlers = (io, socket) => {
   socket.on(ROOM_CONNECTION_VERIFICATION, (roomCode, callback) => {
     if (activeRooms.has(roomCode)) {
       const token = generateToken(roomCode, socket.id);
+
       callback({ success: true, message: 'ID de sesión correcto', token });
     } else {
       console.log(`IOS Client ${socket.id} tried to join room ${roomCode} but it doesn't exist`);
       callback({ success: false, message: 'La sala no existe' });
+    }
+  });
+
+  socket.on(SEND_CONSULTATION_DATA, (data) => {
+    const { consultationID } = data;
+    const roomKey = socketRoomMap.get(socket.id);
+
+    if(roomKey) {
+      io.to(roomKey).emit(SEND_CONSULTATION_DATA, consultationID);
+      console.log(`IOS Client ${socket.id} sent consultation data to room ${roomKey}`);
     }
   });
 
@@ -68,6 +81,7 @@ const registerSocketHandlers = (io, socket) => {
     }
 
     socket.join(decoded.roomCode);
+    io.to(decoded.roomCode).emit(REQUEST_CONSULTATION_DATA);
     callback({ success: true, message: 'Conexión al room exitosa' });
     console.log(`Web Client ${socket.id} joined room ${decoded.roomCode}`);
   });

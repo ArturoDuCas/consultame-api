@@ -18,4 +18,36 @@ module.exports = {
       res.status(500).json({message: "Error al crear el mensaje", error: err});
     }
   },
+
+  updateMessage: async (req, res) => {
+    const { id } = req.params;
+    const { message } = req.body;
+    try {
+      const updated_message = await prisma.messages.update({
+        where: {
+          id: parseInt(id)
+        },
+        data: {
+          message,
+        }
+      });
+      res.status(200).json(updated_message);
+    } catch(err) {
+      res.status(500).json({message: "Error al actualizar el mensaje", error: err});
+    }
+  },
+
+  getMessages: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const messages = await prisma.messages.findMany({
+        where: {
+          consultation_id: parseInt(id)
+        }
+      });
+      res.status(200).json(messages);
+    } catch(err) {
+      res.status(500).json({message: "Error al obtener los mensajes", error: err});
+    }
+  }
 }
