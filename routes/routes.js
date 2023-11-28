@@ -48,6 +48,5 @@ router.use("/doctors/local", require("./doctors_local"));
 router.use("/message", require("./message"));
 router.use("/consultation", require("./consultation"));
 router.use("/family", require("./family"));
-router.use("/register", require("./userRegister"))
 router.use("/login", require("./userLogin"))
 module.exports = router; 
