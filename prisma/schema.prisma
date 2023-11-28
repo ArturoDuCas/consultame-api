@@ -321,3 +321,9 @@ model blood_type {
   type String @unique(map: "blood_type_unique_type") @db.VarChar(50)
   user user[]
 }
+
+model UserAdmin {
+  id       Int      @id @default(autoincrement())
+  username String
+  password String
+}
