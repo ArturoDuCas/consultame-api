@@ -20,5 +20,7 @@ router.post("cdetails", UserControllers.createUserWithDetails);
 
 
 router.put("/name/:id", UserControllers.updateUserNameById);
+router.put("/weight/:id", UserControllers.updateUserWeightById);
+router.put("/height/:id", UserControllers.updateUserHeightById);
 
 module.exports = router;
