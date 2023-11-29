@@ -52,7 +52,7 @@ const habit = await prisma.habit.create({
         }
       });
 
-      res.status(200).json(contact);
+      res.status(200).json(habit);
     } catch(err) {
       res.status(500).json({message: "Error al eliminar el hábito", error: err});
     }
