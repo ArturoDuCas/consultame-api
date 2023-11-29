@@ -18,4 +18,7 @@ router.get("/details/:id", UserControllers.getUserDetails);
 
 router.post("cdetails", UserControllers.createUserWithDetails);
 
+
+router.put("/name/:id", UserControllers.updateUserNameById);
+
 module.exports = router;
