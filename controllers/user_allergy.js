@@ -19,13 +19,12 @@ module.exports = {
   },
 
   createUserAllergy: async (req, res) => {
-    const { id } = req.params;
-    const { allergy_id } = req.body;
+    const { user_id, allergy_id } = req.body;
 
     try {
       const userAllergy = await prisma.user_allergy.create({
         data: {
-          user_id: parseInt(id),
+          user_id: parseInt(user_id),
           allergy_id: parseInt(allergy_id),
         }
       });
