@@ -9,10 +9,10 @@ module.exports = {
       // Create a new object with the data, ensuring to parse the user_id field to an integer
       const newData = {
         name,
-        description,
-        user_id: parseInt(user_id),
-        doctor_id: parseInt(doctor_id),
-        hospital_id: parseInt(hospital_id)
+        // description,
+        // user_id: parseInt(user_id),
+        // doctor_id: parseInt(doctor_id),
+        // hospital_id: parseInt(hospital_id)
       };
   
       // Remove undefined fields
