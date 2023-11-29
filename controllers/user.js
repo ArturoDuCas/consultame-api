@@ -1,5 +1,5 @@
 const { prisma } = require('../config/db');
-
+const { createToken } = require("../Authorization/jwt.js")
 
 module.exports = {
   getAllUsers: async (req, res) => {
@@ -57,7 +57,7 @@ module.exports = {
 
   createUser: async (req, res) => {
     const { password, name, email, sex_id } = req.body;
-    console.log(req.body);
+    console.log(req.body)
     try {
       const user = await prisma.user.create({
         data: {
@@ -67,8 +67,13 @@ module.exports = {
           sex_id: parseInt(sex_id)
         }
       });
-      res.status(200).json({user});
+      
+      const token = createToken(user.id)
+      console.log("se logro")
+      res.status(200).json(user); // tengo que arreglar consultation ID WTFC
+
     } catch(err) {
+
       res.status(500).json({message: "Error al crear el usuario", error: err});
     }
   },
