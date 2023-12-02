@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {verifyToken, createToken} = require('../Authorization/jwt.js');
+const {verifyToken, createToken} = require('../services/jwt.js');
 
 
 // router.use("/user", verifyToken, require("./user"));
@@ -48,6 +48,4 @@ router.use("/doctors/local", require("./doctors_local"));
 router.use("/message", require("./message"));
 router.use("/consultation", require("./consultation"));
 router.use("/family", require("./family"));
-router.use("/register", require("./userRegister"))
-router.use("/login", require("./userLogin"))
 module.exports = router; 
