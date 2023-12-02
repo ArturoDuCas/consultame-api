@@ -27,6 +27,7 @@ const {verifyToken, createToken} = require('../services/jwt.js');
 
 
 
+router.use("/address", require("./address"));
 router.use("/user", require("./user"));
 router.use("/sex",require("./sex"));
 router.use("/contacts",require("./contacts"));

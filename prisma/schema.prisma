@@ -8,7 +8,6 @@ datasource db {
 }
 
 model address {
-  id                    Int     @id(map: "address_pk") @default(autoincrement())
   street_line_1         String? @db.VarChar(255)
   street_line_2         String? @db.VarChar(255)
   city                  String? @db.VarChar(100)
@@ -16,7 +15,7 @@ model address {
   postal_code           String? @db.VarChar(20)
   country               String? @db.VarChar(100)
   additional_info       String?
-  user_id               Int
+  user_id               Int     @id(map: "address_pk")
   user                  user    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "address_user_fk")
 }
 
@@ -170,15 +169,15 @@ model user {
   password               String                   @db.VarChar(255)
   email                  String                   @unique @db.VarChar(255)
   id                     Int                      @id(map: "user_pk") @default(autoincrement())
-  name                   String                   @db.VarChar(255)
+  name                   String?                  @db.VarChar(255)
   birth_date             DateTime?                @db.Date
   phone_number           String?                  @db.VarChar(20)
-  sex_id                 Int
-  created_at             DateTime ?                @default(now())
+  sex_id                 Int?
+  created_at             DateTime                 @default(now())
   height                 Decimal?                 @db.Decimal
   weight                 Decimal?                 @db.Decimal
   blood_id               Int?
-  address                address[]
+  address                address?
   consultation           consultation[]
   contacts               contacts[]
   family_medical_history family_medical_history[]
@@ -323,7 +322,7 @@ model blood_type {
 }
 
 model userAdmin {
-  id       Int      @id @default(autoincrement())
-  username String @unique
-  password String
+  id       Int    @id @default(autoincrement())
+  username String @db.VarChar(255)
+  password String @db.VarChar(255)
 }

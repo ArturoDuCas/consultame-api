@@ -46,10 +46,27 @@ module.exports = {
         where: {
           id: parseInt(id)
         },
-        include : {
-          sex: true
+        select: {
+          name: true,
+          email: true,
+          birth_date: true,
+          phone_number: true,
+          blood_type: true,
+          weight: true,
+          height: true,
         }
       });
+
+      const user_address = await prisma.address.findMany({
+        where: {
+          user_id: parseInt(id)
+        },
+        select: {
+
+        }
+      });
+      user.address = user_address[0];
+
       res.status(200).json(user);
     } catch(err) {
       res.status(500).json({message: "Error al obtener el usuario", error: err});
