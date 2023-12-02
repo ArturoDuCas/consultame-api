@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const ChronicControllers = require("../controllers/disease")
+const diseaseController = require("../controllers/disease")
 
-
+router.get("/chronics", diseaseController.getChronics);
 
 module.exports = router;

@@ -22,6 +22,7 @@ const {
   SEND_MESSAGE_BEING_WRITTEN,
   REQUEST_CONSULTATION_DATA,
   SEND_CONSULTATION_DATA,
+  UPDATE_MESSAGE,
 
 } = require('./socketEvents');
 
@@ -91,6 +92,22 @@ const registerSocketHandlers = (io, socket) => {
     console.log({roomKey, confirmation});
 
     io.to(roomKey).emit(SAVE_MESSAGES_CONFIRMATION, confirmation);
+  });
+
+
+  socket.on(UPDATE_MESSAGE, (data) => {
+    const { token, message, id } = data;
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if(!decoded) {
+      console.log(`Web Client ${socket.id} tried to update message ${id} but the token is invalid`);
+      return;
+    }
+
+    const roomKey = decoded.roomCode;
+    if(roomKey) {
+      io.to(roomKey).emit(UPDATE_MESSAGE, { message, id });
+      console.log(`Web Client ${socket.id} updated message ${id} in room ${roomKey}`);
+    }
   });
 
 

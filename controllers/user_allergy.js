@@ -19,13 +19,12 @@ module.exports = {
   },
 
   createUserAllergy: async (req, res) => {
-    const { id } = req.params;
-    const { allergy_id } = req.body;
+    const { user_id, allergy_id } = req.body;
 
     try {
       const userAllergy = await prisma.user_allergy.create({
         data: {
-          user_id: parseInt(id),
+          user_id: parseInt(user_id),
           allergy_id: parseInt(allergy_id),
         }
       });
@@ -36,15 +35,15 @@ module.exports = {
   },
 
   deleteUserAllergy: async (req, res) => {
-    const { id } = req.params;
-    const { allergy_id } = req.body;
+    const { allergy_id, user_id } = req.body;
+    console.log(allergy_id, user_id)
     try {
       const userAllergy = await prisma.user_allergy.delete({
         where: {
-          user_id_allergy_id: {
-            user_id: parseInt(id),
-            allergy_id: parseInt(allergy_id)
-          }
+allergy_id_user_id: {
+            allergy_id: parseInt(allergy_id),
+            user_id: parseInt(user_id)
+}
         }
       });
 

@@ -95,6 +95,7 @@ module.exports = {
       const user = await prisma.user.findUnique({
         where: { id: userId },
           select: {
+          id: true,
            email: true,
            name: true,
            birth_date: true,
@@ -156,7 +157,56 @@ module.exports = {
       console.log(err); 
       res.status(500).json({message: "Error al crear el usuario con detalles", error: err});
     }
-  }
+  },
 
-  
+  updateUserNameById: async (req, res) => {
+    const { id } = req.params;
+    try{
+      const user = await prisma.user.update({
+        where: {
+          id: parseInt(id)
+        },
+        data: {
+          name: req.body.name
+        }
+      });
+      res.status(200).json({user});
+    } catch(err) {
+      res.status(500).json({message: "Error al actualizar el nombre del usuario", error: err});
+    }
+  },
+
+  updateUserWeightById: async (req, res) => {
+    const { id } = req.params;
+    try{
+      const user = await prisma.user.update({
+        where: {
+          id: parseInt(id)
+        },
+        data: {
+          weight: req.body.weight
+        }
+      });
+      res.status(200).json({user});
+    } catch(err) {
+      res.status(500).json({message: "Error al actualizar el peso del usuario", error: err});
+    }
+  },
+
+  updateUserHeightById: async (req, res) => {
+    const { id } = req.params;
+    try{
+      const user = await prisma.user.update({
+        where: {
+          id: parseInt(id)
+        },
+        data: {
+          height: req.body.height
+        }
+      });
+      res.status(200).json({user});
+    } catch(err) {
+      res.status(500).json({message: "Error al actualizar la altura del usuario", error: err});
+    }
+  }
 }

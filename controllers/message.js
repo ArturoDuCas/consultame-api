@@ -2,14 +2,16 @@ const { prisma } = require("../config/db");
 
 module.exports = {
   createMessage: async (req, res) => {
-    const { message, is_from_user, created_at, consultation_id } = req.body;
+    const { message, is_from_user, consultation_id } = req.body;
+
+    let created_at = new Date();
     try {
       const new_message = await prisma.messages.create({
         data: {
           message,
           is_starred: false,
           is_from_user,
-          created_at: new Date(created_at),
+          created_at: created_at,
           consultation_id: parseInt(consultation_id)
         }
       });
@@ -43,6 +45,9 @@ module.exports = {
       const messages = await prisma.messages.findMany({
         where: {
           consultation_id: parseInt(id)
+        },
+        orderBy: {
+          created_at: 'asc'
         }
       });
       res.status(200).json(messages);

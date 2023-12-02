@@ -6,6 +6,7 @@ module.exports = {
   SAVE_MESSAGES_CONFIRMATION: "Save Messages Confirmation", // Web -> NodeJS -> IOS: El cliente web confirma si se puede guardar o no la conversacion en la base de datos
   REQUEST_CONSULTATION_DATA: "Request Consultation Data", // Web -> NodeJS -> IOS: El cliente web solicita los datos de la consulta
   SEND_CONSULTATION_DATA: "Send Consultation Data", // IOS -> NodeJS -> Web: El cliente iOS envia los datos de la consulta
+  UPDATE_MESSAGE: "Update Message", // Web -> NodeJS -> IOS: El cliente web envia el mensaje actualizado
 
 
   SEND_COMPLETE_MESSAGE: "Send Complete Message", // IOS -> NodeJS -> Web: El cliente iOS envia el mensaje completo que se escribió

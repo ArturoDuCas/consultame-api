@@ -41,5 +41,20 @@ const habit = await prisma.habit.create({
     } catch(err) {
       res.status(500).json({message: "Error al obtener los habitos disponibles del usuario", error: err});
     }
+  },
+  deleteHabit: async (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const habit = await prisma.habit.delete({
+        where: {
+            id: parseInt(id),
+        }
+      });
+
+      res.status(200).json(habit);
+    } catch(err) {
+      res.status(500).json({message: "Error al eliminar el hábito", error: err});
+    }
   }
 }

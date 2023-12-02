@@ -36,13 +36,11 @@ router.use("/vaccine",require("./vaccine"));
 router.use("/user/vaccine",require("./user_vaccine"));
 router.use("/count",require("./count"));
 router.use("/consultation",require("./consultation"));
-
-
 router.use("/allergy",require("./allergy"));
-router.use("/user/allergy", require("./user_allergy"));
+router.use("/user_allergy", require("./user_allergy"));
 router.use("/allergy/type", require("./allergy_type"));
 router.use("/habit", require("./habit"));
-router.use("/user/habit", require("./user_habit"));
+router.use("/user_habit", require("./user_habit"));
 router.use("/habit/type", require("./habit_type"));router.use("/doctors", require("./doctors"));
 router.use("/doctors/local", require("./doctors_local"));
 router.use("/message", require("./message"));
