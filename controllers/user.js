@@ -1,6 +1,5 @@
 const { id } = require('date-fns/locale');
 const { prisma } = require('../config/db');
-const { createToken } = require('../Authorization/jwt.js')
 
 module.exports = {
   getAllUsers: async (req, res) => {
@@ -33,7 +32,7 @@ module.exports = {
         let age = new Date().getFullYear() - new Date(user.birth_date).getFullYear();
         user.age = age.toString();
       }
-      
+
       res.status(200).json(user);
     } catch(err) {
       res.status(500).json({message: "Error al obtener los datos del usuario", error: err});
@@ -56,31 +55,6 @@ module.exports = {
       res.status(500).json({message: "Error al obtener el usuario", error: err});
       }
     },
-
-  createUser: async (req, res) => {
-
-    const {name, email, password, sex_id } = req.body;
-    try {
-      const user = await prisma.user.create({
-        data: {
-          name,
-          email,
-          password,
-          sex_id: parseInt(sex_id)
-        }
-      });
-      const user_id = user.id
-      const jwt = createToken(user_id)
-      const response = {
-        user_id: user_id,
-        token: jwt
-      }
-      console.log("Created user: " + JSON.stringify(response))
-      res.status(200).json(response);
-    } catch(err) {
-      res.status(500).json({message: "Error al crear el usuario", error: err});
-    }
-  },
 
   updateUserById: async (req, res) => {
     const { id } = req.params;

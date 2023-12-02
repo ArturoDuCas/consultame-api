@@ -11,8 +11,6 @@ const createToken = (user_id) => {
     return token;
 }
 
-
-
 const verifyToken = (req, res, next) => {
     const token = req.headers['authorization'];
     if (!token) {

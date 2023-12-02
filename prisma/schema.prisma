@@ -170,10 +170,10 @@ model user {
   password               String                   @db.VarChar(255)
   email                  String                   @unique @db.VarChar(255)
   id                     Int                      @id(map: "user_pk") @default(autoincrement())
-  name                   String?                  @db.VarChar(255)
+  name                   String                   @db.VarChar(255)
   birth_date             DateTime?                @db.Date
   phone_number           String?                  @db.VarChar(20)
-  sex_id                 Int?
+  sex_id                 Int
   created_at             DateTime ?                @default(now())
   height                 Decimal?                 @db.Decimal
   weight                 Decimal?                 @db.Decimal
